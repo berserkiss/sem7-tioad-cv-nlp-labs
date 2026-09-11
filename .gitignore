@@ -1,0 +1,19 @@
+# Python environment / cache
+.venv/
+__pycache__/
+*.pyc
+
+# IDE
+.idea/
+
+# Large downloaded/generated artifacts - not source, regenerate via the
+# scripts instead of tracking in git (some exceed GitHub's 100MB file limit)
+*.mp4
+*.pt
+*.pkl
+datasets/
+haarcascades/
+sentiment_dataset.csv
+
+# Local run scratch
+result.json

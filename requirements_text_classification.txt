@@ -1,0 +1,11 @@
+nltk>=3.8
+scikit-learn>=1.3.0
+pandas>=2.0.0
+numpy>=1.24.0
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+pymorphy2>=0.9.1
+# Альтернативы для лемматизации (выберите одну):
+# pymystem3>=0.2.0  # Рекомендуется для Python 3.13
+# natasha>=1.0.0    # Альтернатива
+
