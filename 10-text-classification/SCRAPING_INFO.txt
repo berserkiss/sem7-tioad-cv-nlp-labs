@@ -1,0 +1,110 @@
+═══════════════════════════════════════════════════════════════
+  SCRAPING WEBSITES FOR NEW DATA
+═══════════════════════════════════════════════════════════════
+
+✅ IMPLEMENTED: scraping reviews from websites
+
+The script supports scraping reviews from:
+
+1. OTZOVIK (otzovik.com)
+   - A Russian product/service review site
+   - Example URL: https://otzovik.com/reviews/...
+   - Site type: 'otzovik'
+
+2. IRECOMMEND (irecommend.ru)
+   - A product review site
+   - Example URL: https://irecommend.ru/content/...
+   - Site type: 'irecommend'
+
+3. YANDEX.MARKET (market.yandex.ru)
+   - Product reviews on Yandex.Market
+   - Example URL: https://market.yandex.ru/product/.../reviews
+   - Site type: 'yandex_market'
+
+4. GENERIC SCRAPER
+   - Works on any site with reviews
+   - Automatically extracts text from paragraphs and blocks
+   - Site type: 'generic' (the default)
+
+═══════════════════════════════════════════════════════════════
+  HOW TO USE IT
+═══════════════════════════════════════════════════════════════
+
+OPTION 1: Use sample reviews (default)
+   The script uses built-in example reviews matching the dataset's
+   subject matter.
+
+OPTION 2: Scrape a specific URL
+
+   In text_classification.py, find:
+
+   # OPTION 2: Real scraping from websites
+   # review_urls = [
+   #     'https://otzovik.com/reviews/...',
+   #     'https://irecommend.ru/content/...',
+   # ]
+   # new_texts = scraper.scrape_reviews_from_urls(review_urls, max_reviews=15)
+
+   Uncomment it and point it at real review pages.
+
+OPTION 3: Scrape a single site
+
+   new_texts = scraper.scrape_from_url(
+       'https://otzovik.com/reviews/12345',
+       site_type='otzovik'
+   )
+
+═══════════════════════════════════════════════════════════════
+  IMPORTANT NOTES
+═══════════════════════════════════════════════════════════════
+
+⚠️ PLAY BY THE RULES:
+   - Check the site's robots.txt before scraping
+   - Don't hammer the site with requests (add delays)
+   - Respect the site's terms of use
+   - Only scrape for coursework/learning purposes
+
+⚠️ ANTI-SCRAPING MEASURES:
+   - Some sites block scraping
+   - You may need a proxy or other workarounds
+   - For production use, prefer an official API
+
+⚠️ SITE STRUCTURE:
+   - Site markup can change over time
+   - The scraper may need adjusting for a specific site
+   - The generic scraper works on most sites out of the box
+
+═══════════════════════════════════════════════════════════════
+  DATA PREPROCESSING
+═══════════════════════════════════════════════════════════════
+
+✅ All scraped data automatically goes through preprocessing:
+   - Tokenization
+   - Special-character removal
+   - Stop-word removal
+   - Lemmatization (if available)
+   - Lowercasing
+
+This satisfies assignment task 2 (text preprocessing).
+
+═══════════════════════════════════════════════════════════════
+  USAGE EXAMPLES
+═══════════════════════════════════════════════════════════════
+
+# Example 1: Scraping Otzovik
+reviews = scraper.scrape_from_url(
+    'https://otzovik.com/reviews/12345',
+    site_type='otzovik'
+)
+
+# Example 2: Scraping several sites
+urls = [
+    'https://otzovik.com/reviews/...',
+    'https://irecommend.ru/content/...'
+]
+reviews = scraper.scrape_reviews_from_urls(urls, max_reviews=20)
+
+# Example 3: Using sample reviews (for a demo)
+reviews = scraper.scrape_reviews_from_text("", num_reviews=15)
+
+═══════════════════════════════════════════════════════════════

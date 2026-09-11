@@ -1,0 +1,123 @@
+═══════════════════════════════════════════════════════════════
+  TEXT CLASSIFICATION: USAGE INSTRUCTIONS
+═══════════════════════════════════════════════════════════════
+
+📋 WHAT'S INCLUDED:
+  ✅ Text preprocessing (tokenization, lemmatization, stop-word removal)
+  ✅ Vectorization (Bag of Words, TF-IDF)
+  ✅ Training 3 models (Naive Bayes, SVM, Random Forest)
+  ✅ Picking the best model by its metrics
+  ✅ Scraping new data
+  ✅ Classifying the new data
+
+═══════════════════════════════════════════════════════════════
+  WHERE TO GET A DATASET
+═══════════════════════════════════════════════════════════════
+
+📌 OPTION 1: Use the built-in dataset (default)
+   The script generates a synthetic dataset for demonstration.
+   Just run: python text_classification.py
+
+📌 OPTION 2: Download from Kaggle (RECOMMENDED)
+
+   Step 1: Sign up on Kaggle
+   → https://www.kaggle.com
+
+   Step 2: Get API credentials
+   → Settings → API → Create New Token
+   → Save the kaggle.json file
+
+   Step 3: Put kaggle.json in the right folder:
+   Windows: C:\Users\YourName\.kaggle\kaggle.json
+   Linux/Mac: ~/.kaggle/kaggle.json
+
+   Step 4: Install the kaggle library:
+   → pip install kaggle
+
+   Step 5: Download the dataset:
+   → python download_dataset.py
+
+   Or manually:
+   → kaggle datasets download -d cryptexcode/russian-sentiment-analysis-dataset
+   → unzip russian-sentiment-analysis-dataset.zip
+   → move the CSV into the datasets/ folder
+
+📌 OPTION 3: Use your own CSV file
+
+   Create a CSV with columns:
+   - text: the text data
+   - label: the class label (0 or 1)
+
+   Put it in the datasets/ folder.
+   The script will find and load it automatically!
+
+📌 RECOMMENDED KAGGLE DATASETS:
+
+   1. Russian Sentiment Analysis Dataset
+      → cryptexcode/russian-sentiment-analysis-dataset
+      → Reviews labeled with sentiment
+
+   2. Russian Reviews Dataset
+      → artemkonevskoy/russian-reviews-dataset
+      → A large dataset of reviews
+
+   3. Lenta.ru News Corpus
+      → yutkin/corpus-of-russian-news-articles-from-lenta
+      → News with categories
+
+═══════════════════════════════════════════════════════════════
+  QUICK START
+═══════════════════════════════════════════════════════════════
+
+1. Install dependencies:
+   pip install -r requirements_text_classification.txt
+
+2. Run the script:
+   python text_classification.py
+
+3. The script will automatically:
+   - Load/create a dataset
+   - Preprocess it
+   - Train the models
+   - Pick the best one
+   - Scrape and classify new data
+
+═══════════════════════════════════════════════════════════════
+  PROJECT LAYOUT
+═══════════════════════════════════════════════════════════════
+
+text_classification.py               - Main script
+download_dataset.py                  - Dataset download script
+requirements_text_classification.txt - Dependencies
+README_text_classification.md        - Full documentation
+INSTRUCTIONS.txt                     - This file
+datasets/                            - Your datasets go here (created automatically)
+
+═══════════════════════════════════════════════════════════════
+  IMPORTANT NOTES
+═══════════════════════════════════════════════════════════════
+
+⚠ Russian-language support requires:
+   - pymorphy2 (for lemmatization)
+   - pymorphy2-dicts-ru (Russian dictionaries)
+
+⚠ If no dataset is found, the script falls back to a synthetic
+   dataset to demonstrate the functionality.
+
+⚠ For best results, use a dataset with at least 1000+ examples.
+
+⚠ Web scraping should respect each site's usage rules
+   (robots.txt, rate limiting).
+
+═══════════════════════════════════════════════════════════════
+  SUPPORT
+═══════════════════════════════════════════════════════════════
+
+Full documentation: README_text_classification.md
+
+If something isn't working:
+1. Check that all dependencies are installed
+2. Make sure the dataset is in the right format (CSV with text and label columns)
+3. Make sure pymorphy2 is installed for Russian-language support
+
+═══════════════════════════════════════════════════════════════

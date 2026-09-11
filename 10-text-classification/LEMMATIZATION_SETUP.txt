@@ -1,0 +1,82 @@
+═══════════════════════════════════════════════════════════════
+  LEMMATIZATION ALTERNATIVES (Python 3.13)
+═══════════════════════════════════════════════════════════════
+
+✅ RECOMMENDED: pymystem3 (Yandex's MyStem)
+
+MyStem is Yandex's morphological analyzer; the pymystem3 wrapper is
+compatible with Python 3.13 and simple to use.
+
+Install:
+   pip install pymystem3
+
+Advantages:
+   ✅ Works with Python 3.13
+   ✅ Simple API
+   ✅ Fast
+   ✅ Good lemmatization accuracy
+   ✅ Built by Yandex
+
+═══════════════════════════════════════════════════════════════
+
+ALTERNATIVE: Natasha
+
+Natasha is a modern Russian NLP library, compatible with Python 3.13.
+
+Install:
+   pip install natasha
+
+Advantages:
+   ✅ Works with Python 3.13
+   ✅ Modern and actively maintained
+   ✅ Good lemmatization accuracy
+   ✅ Includes other NLP tools
+   ⚠️ Needs more resources
+
+═══════════════════════════════════════════════════════════════
+  OTHER ALTERNATIVES
+═══════════════════════════════════════════════════════════════
+
+1. MyStem (Yandex)
+   - Console application
+   - Requires installing separate software
+   - Fast
+   - Install: download from Yandex's site
+
+2. DeepPavlov
+   - An NLP platform
+   - Pretrained models
+   - Needs more resources
+   - Install: pip install deeppavlov
+
+3. spaCy (with a Russian model)
+   - A popular NLP library
+   - Requires downloading the Russian model
+   - Install:
+     pip install spacy
+     python -m spacy download ru_core_news_sm
+
+═══════════════════════════════════════════════════════════════
+  HOW IT'S USED
+═══════════════════════════════════════════════════════════════
+
+The script automatically tries, in order:
+1. pymorphy2 (if it works)
+2. natasha (if installed and pymorphy2 doesn't work)
+3. No lemmatization (if nothing works)
+
+Just install natasha:
+   pip install natasha
+
+And run the script — it'll pick up natasha automatically!
+
+═══════════════════════════════════════════════════════════════
+  VERIFYING IT WORKED
+═══════════════════════════════════════════════════════════════
+
+Once natasha is installed, running the script will print:
+   "Using Natasha for lemmatization (Python 3.13 compatible)"
+
+instead of a warning that lemmatization isn't available.
+
+═══════════════════════════════════════════════════════════════

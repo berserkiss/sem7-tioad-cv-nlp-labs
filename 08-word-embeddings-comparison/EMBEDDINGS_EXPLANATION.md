@@ -1,187 +1,189 @@
-# Объяснение работы эмбеддингов и кода
+# How the Embeddings and Code Work
 
-## 1. Принцип выделения эмбеддингов выбранных моделей
+## 1. How the chosen models produce embeddings
 
 ### Word2Vec (Google News)
 
-**Принцип работы:**
-Word2Vec использует нейронную сеть для обучения представлений слов на основе их контекста в тексте.
+**How it works:**
+Word2Vec trains a neural network to learn word representations from the words'
+context in text.
 
-**Архитектура:**
+**Architecture:**
 ```
 ┌─────────────┐
-│  Входное    │  "king" (one-hot вектор)
-│   слово     │  
+│   Input     │  "king" (one-hot vector)
+│    word     │
 └──────┬──────┘
        │
        ▼
 ┌─────────────┐
-│  Скрытый    │  Матрица весов W (300 измерений)
-│    слой     │  → Вектор размерности 300
+│  Hidden     │  Weight matrix W (300 dimensions)
+│   layer     │  → 300-dimensional vector
 └──────┬──────┘
        │
        ▼
 ┌─────────────┐
-│  Выходной   │  Предсказание контекстных слов
-│    слой     │  "man", "queen", "royal"...
+│  Output     │  Predicted context words
+│   layer     │  "man", "queen", "royal"...
 └─────────────┘
 ```
 
-**Два основных подхода:**
+**Two main approaches:**
 
 1. **CBOW (Continuous Bag of Words)**:
-   - Вход: контекстные слова вокруг целевого слова
-   - Выход: предсказание целевого слова
-   - Пример: "The ___ is powerful" → предсказать "king"
+   - Input: the context words around a target word
+   - Output: predict the target word
+   - Example: "The ___ is powerful" → predict "king"
 
-2. **Skip-gram** (используется в Google News модели):
-   - Вход: одно слово
-   - Выход: предсказание контекстных слов
-   - Пример: "king" → предсказать "man", "queen", "royal", "crown"
+2. **Skip-gram** (used by the Google News model):
+   - Input: a single word
+   - Output: predict its context words
+   - Example: "king" → predict "man", "queen", "royal", "crown"
 
-**Ключевая идея:** Слова, встречающиеся в похожих контекстах, получают похожие векторы.
+**Key idea:** Words that occur in similar contexts get similar vectors.
 
-**Формула:**
+**Formula:**
 ```
 P(context|word) = softmax(W_out × W_in × word_vector)
 ```
 
 ### GloVe (Global Vectors for Word Representation)
 
-**Принцип работы:**
-GloVe комбинирует глобальную статистику корпуса с локальным контекстом слов.
+**How it works:**
+GloVe combines global corpus statistics with local word context.
 
-**Основная идея:**
-Использует матрицу совместной встречаемости (co-occurrence matrix), которая показывает, как часто слова появляются вместе в окне определенного размера.
+**Core idea:**
+It uses a co-occurrence matrix that records how often words appear together
+within a window of a given size.
 
-**Алгоритм:**
+**Algorithm:**
 ```
-1. Построение матрицы совместной встречаемости X:
-   X[i,j] = количество раз, когда слово j появляется в контексте слова i
+1. Build the co-occurrence matrix X:
+   X[i,j] = how many times word j appears in the context of word i
 
-2. Минимизация функции потерь:
+2. Minimize the loss function:
    J = Σ f(X_ij) (w_i^T w_j + b_i + b_j - log(X_ij))²
-   
-   где:
-   - w_i, w_j - векторы слов
-   - b_i, b_j - смещения
-   - f(X_ij) - весовая функция (учитывает частоту)
 
-3. Результат: векторы слов, которые кодируют отношения между словами
+   where:
+   - w_i, w_j - word vectors
+   - b_i, b_j - bias terms
+   - f(X_ij) - a weighting function (accounts for frequency)
+
+3. Result: word vectors that encode relationships between words
 ```
 
-**Преимущества:**
-- Учитывает глобальную статистику всего корпуса
-- Лучше улавливает семантические отношения (например, "king - man + woman = queen")
-- Эффективен для больших корпусов
+**Advantages:**
+- Uses the whole corpus's global statistics
+- Captures semantic relationships better (e.g. "king - man + woman = queen")
+- Efficient on large corpora
 
-**Схема:**
+**Diagram:**
 ```
-Корпус текстов
+Text corpus
     │
     ▼
 ┌─────────────────────┐
-│ Матрица совместной  │  X[i,j] = частота совместной встречаемости
-│   встречаемости      │
+│ Co-occurrence       │  X[i,j] = co-occurrence frequency
+│   matrix            │
 └──────────┬──────────┘
            │
            ▼
 ┌─────────────────────┐
-│  Оптимизация через  │  Минимизация функции потерь
-│  градиентный спуск  │
+│  Optimize via       │  Minimize the loss function
+│  gradient descent   │
 └──────────┬──────────┘
            │
            ▼
 ┌─────────────────────┐
-│  Векторы слов       │  w_i ∈ R^d (d = размерность)
-│  (эмбеддинги)       │
+│  Word vectors       │  w_i ∈ R^d (d = dimensionality)
+│  (embeddings)       │
 └─────────────────────┘
 ```
 
-## 2. Параметр семантической близости слов
+## 2. Measuring semantic similarity between words
 
-### Косинусное сходство (Cosine Similarity)
+### Cosine similarity
 
-**Основной параметр:** Косинус угла между векторами слов.
+**Main measure:** The cosine of the angle between two word vectors.
 
-**Формула:**
+**Formula:**
 ```
 cos(θ) = (A · B) / (||A|| × ||B||)
 
-где:
-- A · B - скалярное произведение векторов
-- ||A||, ||B|| - длины векторов (нормы)
+where:
+- A · B - the dot product of the vectors
+- ||A||, ||B|| - the vectors' norms (lengths)
 ```
 
-**Диапазон значений:**
-- **1.0** - слова идентичны (или очень похожи)
-- **0.0** - слова ортогональны (не связаны)
-- **-1.0** - слова противоположны
+**Value range:**
+- **1.0** — the words are identical (or very similar)
+- **0.0** — the words are orthogonal (unrelated)
+- **-1.0** — the words are opposites
 
-**Пример из кода:**
+**Example from the code:**
 ```python
-# В функции find_similar_words используется:
+# find_similar_words uses:
 similar = model.most_similar(word, topn=10)
-# Внутри gensim вычисляет:
+# internally gensim computes:
 similarity = cosine_similarity(word_vector, other_word_vector)
 ```
 
-**Визуализация:**
+**Visualization:**
 ```
-        word1 (вектор A)
+        word1 (vector A)
          /
         /
-       / θ (угол)
+       / θ (angle)
       /
-     /___________ word2 (вектор B)
-    
-Чем меньше угол θ, тем больше cos(θ), тем ближе слова семантически
+     /___________ word2 (vector B)
+
+The smaller the angle θ, the larger cos(θ), the closer the words are semantically
 ```
 
-### Альтернативные метрики:
+### Alternative metrics:
 
-1. **Евклидово расстояние:**
+1. **Euclidean distance:**
    ```
    d = √(Σ(a_i - b_i)²)
    ```
-   Меньше расстояние = больше похожесть
+   Smaller distance = more similar
 
-2. **Точковое произведение (Dot Product):**
+2. **Dot product:**
    ```
    similarity = A · B
    ```
-   Используется в некоторых моделях
+   Used by some models
 
-## 3. Обучение своих текстовых эмбеддингов
+## 3. Training your own text embeddings
 
-### Библиотеки для обучения:
+### Libraries
 
-#### 1. **Gensim** (используется в вашем коде)
+#### 1. **Gensim** (used in this code)
 ```python
 from gensim.models import Word2Vec, FastText
 
-# Подготовка данных
+# Prepare the data
 sentences = [
     ['king', 'lives', 'in', 'palace'],
     ['queen', 'lives', 'in', 'palace'],
-    # ... больше предложений
+    # ... more sentences
 ]
 
-# Обучение Word2Vec
+# Train Word2Vec
 model = Word2Vec(
     sentences=sentences,
-    vector_size=300,      # Размерность векторов
-    window=5,             # Размер окна контекста
-    min_count=2,          # Минимальная частота слова
-    workers=4,            # Количество потоков
+    vector_size=300,      # vector dimensionality
+    window=5,             # context window size
+    min_count=2,          # minimum word frequency
+    workers=4,            # thread count
     sg=1                  # 1 = Skip-gram, 0 = CBOW
 )
 
-# Сохранение
+# Save it
 model.save("my_word2vec.model")
 ```
 
-#### 2. **FastText** (от Facebook)
+#### 2. **FastText** (from Facebook)
 ```python
 from gensim.models import FastText
 
@@ -192,7 +194,7 @@ model = FastText(
     min_count=2,
     workers=4
 )
-# FastText может работать с OOV (out-of-vocabulary) словами
+# FastText can handle out-of-vocabulary (OOV) words
 ```
 
 #### 3. **TensorFlow / Keras**
@@ -200,7 +202,7 @@ model = FastText(
 import tensorflow as tf
 from tensorflow.keras.layers import Embedding
 
-# Создание слоя эмбеддингов
+# Create an embedding layer
 embedding_layer = Embedding(
     input_dim=vocab_size,
     output_dim=embedding_dim,
@@ -219,158 +221,158 @@ embedding = nn.Embedding(
 )
 ```
 
-### Процесс обучения:
+### Training process:
 
 ```
-1. Подготовка данных
+1. Prepare the data
    │
-   ├─ Токенизация текста
-   ├─ Удаление стоп-слов
-   └─ Создание словаря
-   
-2. Построение обучающих пар
+   ├─ Tokenize the text
+   ├─ Remove stop words
+   └─ Build the vocabulary
+
+2. Build training pairs
    │
-   ├─ Для Skip-gram: (word, context_word)
-   └─ Для CBOW: (context_words, word)
-   
-3. Обучение нейронной сети
+   ├─ For Skip-gram: (word, context_word)
+   └─ For CBOW: (context_words, word)
+
+3. Train the neural network
    │
-   ├─ Инициализация весов
-   ├─ Прямой проход (forward pass)
-   ├─ Вычисление ошибки
-   └─ Обратный проход (backpropagation)
-   
-4. Извлечение эмбеддингов
+   ├─ Initialize weights
+   ├─ Forward pass
+   ├─ Compute loss
+   └─ Backpropagation
+
+4. Extract the embeddings
    │
-   └─ Веса скрытого слоя = векторы слов
+   └─ Hidden-layer weights = word vectors
 ```
 
-## 4. Как работает ваш код
+## 4. How this project's code works
 
-### Структура кода:
+### Code structure:
 
 ```
 embeddings_comparison.py
 │
-├─ EmbeddingModel (класс)
+├─ EmbeddingModel (class)
 │  │
-│  ├─ __init__() - инициализация модели
-│  ├─ find_similar_words() - поиск похожих слов
-│  ├─ analogy() - выполнение аналогий
-│  └─ get_vectors_for_words() - получение векторов
+│  ├─ __init__() - initializes the model
+│  ├─ find_similar_words() - finds similar words
+│  ├─ analogy() - runs an analogy
+│  └─ get_vectors_for_words() - fetches vectors
 │
-├─ EmbeddingComparator (класс)
+├─ EmbeddingComparator (class)
 │  │
-│  ├─ load_word2vec() - загрузка Word2Vec
-│  ├─ load_fasttext() - загрузка FastText/GloVe
-│  ├─ compare_similar_words() - сравнение поиска похожих слов
-│  ├─ compare_analogies() - сравнение аналогий
-│  ├─ visualize_vectors() - визуализация (t-SNE/PCA)
-│  └─ test_analogies_batch() - батч-тестирование
+│  ├─ load_word2vec() - loads Word2Vec
+│  ├─ load_fasttext() - loads FastText/GloVe
+│  ├─ compare_similar_words() - compares similar-word search
+│  ├─ compare_analogies() - compares analogies
+│  ├─ visualize_vectors() - visualization (t-SNE/PCA)
+│  └─ test_analogies_batch() - batch testing
 │
-└─ main() - основная функция
+└─ main() - entry point
    │
-   ├─ Загрузка моделей
-   ├─ Тестирование похожих слов
-   ├─ Тестирование аналогий
-   └─ Визуализация
+   ├─ Load the models
+   ├─ Test similar words
+   ├─ Test analogies
+   └─ Visualize
 ```
 
-### Детальное объяснение функций:
+### Function walkthrough:
 
-#### 1. Загрузка моделей (`load_word2vec`, `load_fasttext`)
+#### 1. Loading the models (`load_word2vec`, `load_fasttext`)
 
-```python
-# Схема работы:
-Проверка кэша
+```
+# How it works:
+Check the cache
     │
-    ├─ Модель в кэше? → Загрузка из кэша (быстро)
-    └─ Модель не в кэше? → Скачивание из интернета (медленно)
-    
-Загрузка в память
+    ├─ Model cached? → load from cache (fast)
+    └─ Not cached? → download from the internet (slow)
+
+Load into memory
     │
-    ├─ Чтение файла с диска
-    ├─ Парсинг данных
-    └─ Создание объекта модели
-    
-Инициализация EmbeddingModel
+    ├─ Read the file from disk
+    ├─ Parse the data
+    └─ Build the model object
+
+Initialize EmbeddingModel
     │
-    └─ Вычисление vocab_size (размер словаря)
+    └─ Compute vocab_size (vocabulary size)
 ```
 
-#### 2. Поиск похожих слов (`find_similar_words`)
+#### 2. Finding similar words (`find_similar_words`)
 
-```python
-# Алгоритм:
-1. Получить вектор слова: word_vector = model[word]
-2. Вычислить косинусное сходство со всеми словами:
+```
+# Algorithm:
+1. Get the word's vector: word_vector = model[word]
+2. Compute cosine similarity against every word:
    for each_word in vocabulary:
        similarity = cosine_similarity(word_vector, model[each_word])
-3. Отсортировать по убыванию similarity
-4. Вернуть топ-N самых похожих
+3. Sort by similarity, descending
+4. Return the top N
 ```
 
-**Схема:**
+**Diagram:**
 ```
-Входное слово: "king"
+Input word: "king"
     │
     ▼
 ┌─────────────────┐
-│  Вектор слова   │  [0.2, -0.1, 0.5, ...] (300 измерений)
+│  Word vector    │  [0.2, -0.1, 0.5, ...] (300 dimensions)
 └────────┬────────┘
          │
          ▼
 ┌─────────────────────────────────┐
-│  Вычисление косинусного         │
-│  сходства со всеми словами      │
+│  Compute cosine similarity       │
+│  against every word              │
 └────────┬────────────────────────┘
          │
          ▼
 ┌─────────────────────────────────┐
-│  Сортировка по убыванию          │
-│  similarity                      │
+│  Sort by similarity,             │
+│  descending                      │
 └────────┬────────────────────────┘
          │
          ▼
 ┌─────────────────────────────────┐
-│  Топ-10 результатов:             │
+│  Top 10 results:                 │
 │  1. kings (0.7138)               │
 │  2. queen (0.6511)               │
-│  3. monarch (0.6413)            │
+│  3. monarch (0.6413)             │
 │  ...                             │
 └─────────────────────────────────┘
 ```
 
-#### 3. Выполнение аналогий (`analogy`)
+#### 3. Running analogies (`analogy`)
 
-**Принцип:** Векторная арифметика в пространстве эмбеддингов.
+**Idea:** Vector arithmetic in embedding space.
 
-**Формула:**
+**Formula:**
 ```
 result_vector = word3_vector + word2_vector - word1_vector
 result = most_similar(result_vector)
 ```
 
-**Пример:** "king - man + woman = ?"
+**Example:** "king - man + woman = ?"
 
 ```
-1. Получить векторы:
+1. Get the vectors:
    king_vec = [0.2, -0.1, 0.5, ...]
    man_vec = [0.1, 0.2, -0.3, ...]
    woman_vec = [0.15, 0.25, -0.2, ...]
 
-2. Вычислить:
+2. Compute:
    result = woman_vec + (king_vec - man_vec)
           = woman_vec + [0.1, -0.3, 0.8, ...]
           = [0.25, -0.05, 0.6, ...]
 
-3. Найти ближайший вектор:
-   → "queen" (схожесть: 0.7609)
+3. Find the nearest vector:
+   → "queen" (similarity: 0.7609)
 ```
 
-**Схема:**
+**Diagram:**
 ```
-Аналогия: king - man = queen - ?
+Analogy: king - man = queen - ?
     │
     ├─ king_vec ────┐
     ├─ man_vec ─────┤
@@ -378,152 +380,151 @@ result = most_similar(result_vector)
                     │
                     ▼
         ┌───────────────────────┐
-        │  Векторная            │
-        │  арифметика:           │
-        │  queen + (king - man)  │
-        └───────────┬─────────────┘
+        │  Vector               │
+        │  arithmetic:          │
+        │  queen + (king - man) │
+        └───────────┬───────────┘
                     │
                     ▼
         ┌───────────────────────┐
-        │  Поиск ближайшего     │
-        │  вектора              │
-        └───────────┬────────────┘
+        │  Find nearest         │
+        │  vector               │
+        └───────────┬───────────┘
                     │
                     ▼
-            Результат: "woman"
+            Result: "woman"
 ```
 
-#### 4. Визуализация (`visualize_vectors`)
+#### 4. Visualization (`visualize_vectors`)
 
 **t-SNE (t-Distributed Stochastic Neighbor Embedding):**
 ```
-Высокомерные векторы (300D)
+High-dimensional vectors (300D)
     │
     ▼
 ┌──────────────────────┐
-│  t-SNE алгоритм:      │
-│  1. Вычисление        │
-│     вероятностей      │
-│     в высоком         │
-│     пространстве      │
-│  2. Минимизация       │
-│     расхождения       │
-│     с низким          │
-│     пространством     │
+│  t-SNE algorithm:     │
+│  1. Compute           │
+│     probabilities     │
+│     in high-dim       │
+│     space             │
+│  2. Minimize          │
+│     divergence        │
+│     from the          │
+│     low-dim           │
+│     space             │
 └──────────┬────────────┘
            │
            ▼
-Низкомерные векторы (2D)
+Low-dimensional vectors (2D)
     │
     ▼
 ┌──────────────────────┐
-│  Визуализация на     │
-│  графике             │
+│  Plot on a chart      │
 └──────────────────────┘
 ```
 
 **PCA (Principal Component Analysis):**
 ```
-Векторы слов (300D)
+Word vectors (300D)
     │
     ▼
 ┌──────────────────────┐
-│  Вычисление          │
-│  главных компонент:   │
-│  1. Ковариационная   │
-│     матрица          │
-│  2. Собственные      │
-│     векторы          │
-│  3. Проекция на      │
-│     первые 2         │
-│     компоненты       │
+│  Compute the          │
+│  principal            │
+│  components:          │
+│  1. Covariance         │
+│     matrix             │
+│  2. Eigenvectors       │
+│  3. Project onto       │
+│     the first 2        │
+│     components         │
 └──────────┬────────────┘
            │
            ▼
-Векторы (2D) - проекция
+2D vectors - projection
     │
     ▼
 ┌──────────────────────┐
-│  Визуализация        │
+│  Plot it              │
 └──────────────────────┘
 ```
 
-### Поток выполнения main():
+### main()'s execution flow:
 
 ```
-1. Инициализация
+1. Setup
    │
-   ├─ Создание EmbeddingComparator
-   └─ Вывод информации о кэшировании
-   
-2. Загрузка моделей
+   ├─ Create the EmbeddingComparator
+   └─ Print caching info
+
+2. Load the models
    │
    ├─ load_word2vec()
-   │  ├─ Проверка кэша
-   │  ├─ Загрузка модели
-   │  └─ Создание EmbeddingModel
+   │  ├─ Check the cache
+   │  ├─ Load the model
+   │  └─ Build an EmbeddingModel
    │
    └─ load_fasttext()
-      ├─ Попытка загрузить легкие модели
-      ├─ Проверка кэша
-      └─ Загрузка модели
-   
-3. Тестирование похожих слов
+      ├─ Try loading a lightweight model
+      ├─ Check the cache
+      └─ Load the model
+
+3. Test similar words
    │
-   ├─ Для каждого тестового слова:
+   ├─ For each test word:
    │  ├─ compare_similar_words()
-   │  │  ├─ find_similar_words() для Word2Vec
-   │  │  └─ find_similar_words() для GloVe
-   │  └─ Вывод результатов
-   
-4. Тестирование аналогий
+   │  │  ├─ find_similar_words() for Word2Vec
+   │  │  └─ find_similar_words() for GloVe
+   │  └─ Print the results
+
+4. Test analogies
    │
-   ├─ Для каждой аналогии:
+   ├─ For each analogy:
    │  ├─ compare_analogies()
-   │  │  ├─ analogy() для Word2Vec
-   │  │  └─ analogy() для GloVe
-   │  └─ Вывод результатов
+   │  │  ├─ analogy() for Word2Vec
+   │  │  └─ analogy() for GloVe
+   │  └─ Print the results
    │
    └─ test_analogies_batch()
-      └─ Подсчет точности
-   
-5. Визуализация
+      └─ Compute accuracy
+
+5. Visualize
    │
    ├─ visualize_vectors(..., method='tsne')
-   │  ├─ Получение векторов слов
-   │  ├─ Применение t-SNE
-   │  └─ Сохранение графика
+   │  ├─ Fetch the word vectors
+   │  ├─ Apply t-SNE
+   │  └─ Save the plot
    │
    └─ visualize_vectors(..., method='pca')
-      ├─ Получение векторов слов
-      ├─ Применение PCA
-      └─ Сохранение графика
-   
-6. Выводы
-   └─ Сравнение моделей и рекомендации
+      ├─ Fetch the word vectors
+      ├─ Apply PCA
+      └─ Save the plot
+
+6. Conclusions
+   └─ Compare the models and give recommendations
 ```
 
-## Выводы по моделям
+## Conclusions per model
 
 ### Word2Vec:
-- ✅ Быстрая загрузка и использование
-- ✅ Хорошо работает с частыми словами
-- ❌ Не работает с редкими словами (OOV)
+- ✅ Fast to load and use
+- ✅ Works well on frequent words
+- ❌ Can't handle rare (OOV) words
 
 ### GloVe:
-- ✅ Учитывает глобальную статистику
-- ✅ Лучше для семантических аналогий
-- ✅ Более стабильные результаты
+- ✅ Uses global corpus statistics
+- ✅ Better at semantic analogies
+- ✅ More stable results
 
 ### FastText:
-- ✅ Работает с редкими словами
-- ✅ Может обработать OOV слова
-- ✅ Лучше для морфологически богатых языков
+- ✅ Handles rare words
+- ✅ Can handle OOV words
+- ✅ Better for morphologically rich languages
 
-## Рекомендации
+## Recommendations
 
-1. **Для английского языка:** Word2Vec или GloVe
-2. **Для редких слов:** FastText
-3. **Для морфологически богатых языков:** FastText
-4. **Для семантических аналогий:** GloVe показывает лучшие результаты
-
+1. **For English:** Word2Vec or GloVe
+2. **For rare words:** FastText
+3. **For morphologically rich languages:** FastText
+4. **For semantic analogies:** GloVe gives the best results

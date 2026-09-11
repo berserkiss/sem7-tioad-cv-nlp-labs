@@ -1,0 +1,88 @@
+═══════════════════════════════════════════════════════════════
+  WHAT TO DO AFTER DOWNLOADING THE DATASET
+═══════════════════════════════════════════════════════════════
+
+✅ YOUR DATASET IS READY TO USE!
+
+sentiment_dataset.csv already lives in the datasets/ folder.
+The script will find and load it automatically.
+
+═══════════════════════════════════════════════════════════════
+  NEXT STEPS:
+═══════════════════════════════════════════════════════════════
+
+1️⃣ INSTALL DEPENDENCIES (if you haven't already):
+
+   pip install -r requirements_text_classification.txt
+
+   Or manually:
+   pip install nltk scikit-learn pandas numpy requests beautifulsoup4 pymorphy2
+   pip install pymorphy2-dicts-ru
+
+2️⃣ RUN THE SCRIPT:
+
+   python text_classification.py
+
+3️⃣ THE SCRIPT WILL AUTOMATICALLY:
+   ✅ Find your dataset in datasets/
+   ✅ Load it (samples large datasets)
+   ✅ Preprocess the text
+   ✅ Train 3 classifier models
+   ✅ Pick the best one
+   ✅ Scrape and classify new data
+
+═══════════════════════════════════════════════════════════════
+  IMPORTANT: DATASET SIZE
+═══════════════════════════════════════════════════════════════
+
+Your dataset can be quite large (500k+ rows).
+
+By default the script samples 10,000 records for training.
+That's enough for a quick, representative demo run.
+
+To use MORE data:
+   Open text_classification.py
+   Find the line: max_samples=10000
+   Change it to whatever you want (e.g. 50000), or None for the whole dataset
+
+To use LESS data (for a quick test):
+   Set max_samples=1000 or max_samples=5000
+
+═══════════════════════════════════════════════════════════════
+  DATASET LAYOUT
+═══════════════════════════════════════════════════════════════
+
+Your dataset has:
+   - text: the review text
+   - label: sentiment (0 = negative, 1 = positive)
+   - src: the data source
+
+The script automatically recognizes the 'text' and 'label' columns.
+
+═══════════════════════════════════════════════════════════════
+  COMMON ISSUES
+═══════════════════════════════════════════════════════════════
+
+❌ Error: ModuleNotFoundError: No module named 'pandas'
+   → Fix: pip install pandas scikit-learn nltk
+
+❌ Error: ModuleNotFoundError: No module named 'pymorphy2'
+   → Fix: pip install pymorphy2 pymorphy2-dicts-ru
+
+❌ The script takes forever
+   → Fix: lower max_samples in the code (e.g. to 5000)
+
+❌ Error loading the dataset
+   → Fix: make sure the file is in datasets/ and named
+          sentiment_dataset.csv
+
+═══════════════════════════════════════════════════════════════
+  READY TO GO!
+═══════════════════════════════════════════════════════════════
+
+Just run:
+   python text_classification.py
+
+And watch the models train! 🚀
+
+═══════════════════════════════════════════════════════════════
