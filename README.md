@@ -5,38 +5,38 @@ detection, corner detection, face detection and embedding comparison, object cou
 in video with YOLO, Russian-language text classification, and word cloud generation
 from a Telegram chat export.
 
-## Topics
+## Structure
 
-| Area | Scripts | Notes |
+| Folder | Topic | Notes |
 | --- | --- | --- |
-| Edge / shape detection | `l1_1.py`, `l1_2.py`, `l2.py`, `l2_3.py`, `l3_1.py`–`l3_4.py` | Canny, Sobel, Laplacian, Hough circles/lines |
-| Corner detection | `L4.py`, `l5.py`, `l5_2.py` | Harris, Shi-Tomasi |
-| Face detection & embeddings | `is_4.py`, `is_5.py`, `embeddings_comparison.py` | Haar cascades, Word2Vec/FastText comparison — see `EMBEDDINGS_EXPLANATION.md` |
-| Vehicle counting | `task1_yolo_car_count.py` | YOLOv8 on traffic video |
-| Text classification | `text_classification.py` | Russian NLP pipeline (tokenize → lemmatize → TF-IDF → classify) — see `README_text_classification.md` |
-| Word cloud | `wordcloud_telegram.py` | Parses a Telegram export into a word cloud — see `КАК_ЭКСПОРТИРОВАТЬ_ИЗ_TELEGRAM.md` |
+| `01-edge-shape-detection/` | Canny, Sobel, Laplacian, Hough circles/lines | `l1_1.py`–`l3_4.py` |
+| `02-corner-detection/` | Harris, Shi-Tomasi | `L4.py`, `l5.py`, `l5_2.py` |
+| `03-face-detection-embeddings/` | Haar-cascade face detection, Word2Vec vs FastText | see its `README_embeddings.md` |
+| `04-yolo-vehicle-counting/` | Vehicle counting in traffic video with YOLOv8 | |
+| `05-text-classification/` | Russian NLP pipeline: tokenize → lemmatize → TF-IDF → classify | see its `README_text_classification.md` |
+| `06-wordcloud-telegram/` | Parses a Telegram export into a word cloud | see its `ИНСТРУКЦИЯ_ОБЛАКО_СЛОВ.md` |
 
-Each area with its own setup notes has a matching `README_*.md` / `ИНСТРУКЦИЯ*` file
-alongside it.
+Each folder is self-contained: its script(s), its own `requirements*.txt` where it
+needs one, its sample input images, and its result output.
 
 ## Setup
+
+Each topic folder installs independently, e.g.:
 
 ```bash
 python -m venv .venv
 .venv\Scripts\activate   # or `source .venv/bin/activate` on macOS/Linux
-pip install -r requirements_embeddings.txt
-pip install -r requirements_text_classification.txt
-pip install -r requirements_wordcloud.txt
+pip install -r 03-face-detection-embeddings/requirements_embeddings.txt
 ```
 
 ## Not tracked in this repo
 
 A few inputs are downloaded/generated rather than committed (see `.gitignore`):
 
-- `datasets/sentiment_dataset.csv` — download via `download_dataset.py`
+- The sentiment dataset CSV — download via `05-text-classification/download_dataset.py`
 - Haar cascade XML files — ship with `opencv-python` (`cv2.data.haarcascades`)
 - `yolov8n.pt` — auto-downloaded by `ultralytics` on first run
 - Traffic/pedestrian `.mp4` test videos and trained `.pkl` models — regenerate locally
 
-Sample outputs (`output/`, `images/`, `*_result.jpg`, `wordcloud_*.png`) are kept small
-enough to commit and show what each script produces.
+Sample result images kept in each folder are small enough to commit and show what
+each script produces.
