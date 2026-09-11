@@ -32,9 +32,7 @@ Folders with extra dependencies carry their own `requirements*.txt`
 
 ## Known gaps (pre-existing, not fixed here)
 
-- `01-image-fundamentals/binarization_thresholding.py` points at a hardcoded personal
-  path (`scottish-fold-2.jpg`) that isn't part of this repo — point `image_path` at any
-  local image to run it.
+
 - `04-face-detection/` expects Haar cascade XML files under a `haarcascades/` folder
   next to the scripts. They ship with `opencv-python`
   (`cv2.data.haarcascades` gives you the install path) — copy the ones you need
