@@ -1,40 +1,50 @@
 # TIOAD — Computer Vision & NLP Labs
 
-Coursework labs covering classical computer vision and NLP/ML pipelines: edge and shape
-detection, corner detection, face detection and embedding comparison, object counting
-in video with YOLO, Russian-language text classification, and word cloud generation
-from a Telegram chat export.
+Coursework labs covering classical computer vision, deep learning, and NLP/ML pipelines.
 
 ## Structure
 
-| Folder | Topic | Notes |
-| --- | --- | --- |
-| `01-edge-shape-detection/` | Canny, Sobel, Laplacian, Hough circles/lines | `l1_1.py`–`l3_4.py` |
-| `02-corner-detection/` | Harris, Shi-Tomasi | `L4.py`, `l5.py`, `l5_2.py` |
-| `03-face-detection-embeddings/` | Haar-cascade face detection, Word2Vec vs FastText | see its `README_embeddings.md` |
-| `04-yolo-vehicle-counting/` | Vehicle counting in traffic video with YOLOv8 | |
-| `05-text-classification/` | Russian NLP pipeline: tokenize → lemmatize → TF-IDF → classify | see its `README_text_classification.md` |
-| `06-wordcloud-telegram/` | Parses a Telegram export into a word cloud | see its `ИНСТРУКЦИЯ_ОБЛАКО_СЛОВ.md` |
+| Folder | Topic |
+| --- | --- |
+| `01-image-fundamentals/` | Grayscale/binary thresholding, histogram equalization, noise filtering, morphology |
+| `02-edge-shape-detection/` | Canny/Sobel/Laplacian edges, Hough lines/circles, document perspective alignment |
+| `03-corner-detection/` | Harris and Shi-Tomasi corner detection |
+| `04-face-detection/` | Haar-cascade face/eye/smile detection — static image and webcam |
+| `05-motion-object-tracking/` | Contour-based motion detection from a video/camera feed |
+| `06-cnn-image-classification/` | Fashion-MNIST CNN classifier, with and without Dropout |
+| `07-zerowidth-steganography/` | Hiding text in zero-width Unicode characters (two iterations of the same idea) |
+| `08-word-embeddings-comparison/` | Word2Vec vs FastText on similarity and analogy tasks |
+| `09-yolo-vehicle-counting/` | Vehicle counting in traffic video with YOLOv8 |
+| `10-text-classification/` | Russian NLP pipeline: tokenize → lemmatize → TF-IDF → classify |
+| `11-wordcloud-telegram/` | Parses a Telegram export into a word cloud |
 
-Each folder is self-contained: its script(s), its own `requirements*.txt` where it
-needs one, its sample input images, and its result output.
+Each folder is self-contained: its script(s), a `requirements*.txt` where it needs one
+beyond the base CV stack, its sample input images, and its result output.
 
 ## Setup
 
-Each topic folder installs independently, e.g.:
-
 ```bash
-python -m venv .venv
-.venv\Scripts\activate   # or `source .venv/bin/activate` on macOS/Linux
-pip install -r 03-face-detection-embeddings/requirements_embeddings.txt
+pip install opencv-python numpy matplotlib scikit-learn tensorflow ultralytics
 ```
+
+Folders with extra dependencies carry their own `requirements*.txt`
+(`08-word-embeddings-comparison/`, `10-text-classification/`, `11-wordcloud-telegram/`).
+
+## Known gaps (pre-existing, not fixed here)
+
+- `01-image-fundamentals/binarization_thresholding.py` points at a hardcoded personal
+  path (`scottish-fold-2.jpg`) that isn't part of this repo — point `image_path` at any
+  local image to run it.
+- `04-face-detection/` expects Haar cascade XML files under a `haarcascades/` folder
+  next to the scripts. They ship with `opencv-python`
+  (`cv2.data.haarcascades` gives you the install path) — copy the ones you need
+  (`haarcascade_frontalface_default.xml`, `haarcascade_eye.xml`, `haarcascade_smile.xml`)
+  in rather than downloading them separately.
 
 ## Not tracked in this repo
 
-A few inputs are downloaded/generated rather than committed (see `.gitignore`):
-
-- The sentiment dataset CSV — download via `05-text-classification/download_dataset.py`
-- Haar cascade XML files — ship with `opencv-python` (`cv2.data.haarcascades`)
+- The sentiment dataset CSV — download via `10-text-classification/download_dataset.py`
+- Haar cascade XML files (see above)
 - `yolov8n.pt` — auto-downloaded by `ultralytics` on first run
 - Traffic/pedestrian `.mp4` test videos and trained `.pkl` models — regenerate locally
 
